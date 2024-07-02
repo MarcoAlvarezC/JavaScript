@@ -4,12 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="main.js"></script>
+    <script src="main.js" defer></script>
 </head>
 <body>
-    <p id="info"></p>
+    <input type="text" id="nombre" placeholder="Ingresa tu nombre">
     <h1 id="bienvenido">Bienvenido </h1>
     <h2>A continuación encontrará el inventario actualizado:</h2>
+    <button id="btnmenu">REALIZAR ACCIÓN</button>
+
+    <div id="form-container" style="display:none;">
+        <h3>Ingrese las entradas y salidas:</h3>
+        <form id="inventory-form">
+            <label for="e1">Entrada Motor 1 Peladora:</label>
+            <input type="number" id="e1" name="e1"><br><br>
+
+            <label for="s1">Salida Motor 1 Peladora:</label>
+            <input type="number" id="s1" name="s1"><br><br>
+
+            <label for="e2">Entrada Motor 2 Peladora:</label>
+            <input type="number" id="e2" name="e2"><br><br>
+
+            <label for="s2">Salida Motor 2 Peladora:</label>
+            <input type="number" id="s2" name="s2"><br><br>
+
+            <label for="e3">Entrada Motor 3 Peladora:</label>
+            <input type="number" id="e3" name="e3"><br><br>
+
+            <label for="s3">Salida Motor 3 Peladora:</label>
+            <input type="number" id="s3" name="s3"><br><br>
+
+            <input type="submit" value="OK">
+        </form>
+    </div>
+
     <table class="table">
         <thead>
           <tr>
@@ -19,10 +46,9 @@
             <th scope="col">Existente</th>
           </tr>
         </thead>
-        <tbody id="table-body">
-          
-        </tbody>
+        <tbody id="table-body"></tbody>
     </table>
-    
+
+    <div id="info"></div>
 </body>
 </html>
