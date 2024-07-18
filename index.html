@@ -3,52 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Inventario de Productos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Sans+MS:wght@400&family=Fredoka+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="main.js" defer></script>
 </head>
 <body>
-    <input type="text" id="nombre" placeholder="Ingresa tu nombre">
-    <h1 id="bienvenido">Bienvenido </h1>
-    <h2>A continuación encontrará el inventario actualizado:</h2>
-    <button id="btnmenu">REALIZAR ACCIÓN</button>
+    <div class="container mt-5">
+        <h1 id="page-title">Ingeniería a la Medida</h1>
+        <input type="text" id="nombre" class="form-control" placeholder="Ingresa tu nombre">
+        <h2 id="bienvenido">Bienvenido</h2>
+        <h3>A continuación encontrará el inventario actualizado:</h3>
+        <button id="btnmenu" class="btn btn-primary mt-3">Agregar Nuevo Producto</button>
 
-    <div id="form-container" style="display:none;">
-        <h3>Ingrese las entradas y salidas:</h3>
-        <form id="inventory-form">
-            <label for="e1">Entrada Motor 1 Peladora:</label>
-            <input type="number" id="e1" name="e1"><br><br>
+        <div id="form-container" style="display:none;" class="mt-3">
+            <h3>Ingrese el nuevo producto:</h3>
+            <form id="product-form">
+                <div class="form-group">
+                    <label for="product-id">Producto:</label>
+                    <input type="text" id="product-id" name="product-id" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="product-entrada">Entrada:</label>
+                    <input type="number" id="product-entrada" name="product-entrada" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="product-salida">Salida:</label>
+                    <input type="number" id="product-salida" name="product-salida" class="form-control">
+                </div>
+                <button type="submit" class="btn btn-success">OK</button>
+            </form>
+        </div>
 
-            <label for="s1">Salida Motor 1 Peladora:</label>
-            <input type="number" id="s1" name="s1"><br><br>
+        <table class="table mt-5">
+            <thead>
+                <tr>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Entrada</th>
+                    <th scope="col">Salida</th>
+                    <th scope="col">Existente</th>
+                    <th scope="col">Modificar Salida</th>
+                    <th scope="col">Eliminar</th>
+                </tr>
+            </thead>
+            <tbody id="table-body"></tbody>
+        </table>
 
-            <label for="e2">Entrada Motor 2 Peladora:</label>
-            <input type="number" id="e2" name="e2"><br><br>
-
-            <label for="s2">Salida Motor 2 Peladora:</label>
-            <input type="number" id="s2" name="s2"><br><br>
-
-            <label for="e3">Entrada Motor 3 Peladora:</label>
-            <input type="number" id="e3" name="e3"><br><br>
-
-            <label for="s3">Salida Motor 3 Peladora:</label>
-            <input type="number" id="s3" name="s3"><br><br>
-
-            <input type="submit" value="OK">
-        </form>
-    </div>
-
-    <table class="table">
-        <thead>
-          <tr>
-            <th scope="col">Producto</th>
-            <th scope="col">Entrada</th>
-            <th scope="col">Salida</th>
-            <th scope="col">Existente</th>
-          </tr>
-        </thead>
-        <tbody id="table-body"></tbody>
-    </table>
-
-    <div id="info"></div>
-</body>
-</html>
+        <div id="info"></div>
+        <button id="load-data" class="btn btn-secondary mt-3">Cargar Datos Estáticos</button>
+        <button id="fetch-api" class="btn btn-secondary mt-3">Cargar

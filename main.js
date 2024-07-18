@@ -1,47 +1,62 @@
-document.addEventListener('DOMContentLoaded', (event) => {
-    let input = document.getElementById("nombre");
-    input.addEventListener('input', () => {
-        let bienvenido = document.getElementById("bienvenido");
-        bienvenido.innerText = "Bienvenido " + input.value;
+$(document).ready(function() {
+    let $nombre = $("#nombre");
+    $nombre.on('input', function() {
+        let bienvenido = $("#bienvenido");
+        bienvenido.text("Bienvenido " + $nombre.val());
     });
 
-    let boton = document.getElementById('btnmenu');
-    boton.addEventListener("click", respuestaClick);
+    let $btnmenu = $('#btnmenu');
+    $btnmenu.on("click", function() {
+        $('#form-container').show();
 
-    function respuestaClick() {
-        document.getElementById('form-container').style.display = 'block';
-
-        document.getElementById('inventory-form').addEventListener('submit', function(event) {
+        $('#product-form').on('submit', function(event) {
             event.preventDefault();
+            let productId = $('#product-id').val();
+            let productEntrada = parseInt($('#product-entrada').val());
+            let productSalida = parseInt($('#product-salida').val());
 
-            let e1 = document.getElementById('e1').value;
-            let s1 = document.getElementById('s1').value;
-            let e2 = document.getElementById('e2').value;
-            let s2 = document.getElementById('s2').value;
-            let e3 = document.getElementById('e3').value;
-            let s3 = document.getElementById('s3').value;
+            let newProduct = {
+                id: productId,
+                entrada: productEntrada,
+                salida: productSalida,
+                existente: productEntrada - productSalida
+            };
 
-            let Categoria1 = [
-                { id: "motor1peladora", entrada: e1, salida: s1 },
-                { id: "motor2peladora", entrada: e2, salida: s2 },
-                { id: "motor3peladora", entrada: e3, salida: s3 }
-            ];
+            let Categoria1 = JSON.parse(localStorage.getItem('Categoria1')) || [];
+            Categoria1.push(newProduct);
 
-            let Categoria2 = [
-                { id: "Union3/4", entrada: 9, salida: 7 },
-                { id: "Codo1/2", entrada: 190, salida: 100 },
-                { id: "Reducción de 2a4", entrada: 10, salida: 0 }
-            ];
-
-            // Guardar los datos en localStorage
             localStorage.setItem('Categoria1', JSON.stringify(Categoria1));
-            localStorage.setItem('Categoria2', JSON.stringify(Categoria2));
 
-            mostrarInventario(Categoria1, Categoria2);
+            mostrarInventario(Categoria1);
         });
+    });
+
+    async function fetchData(url) {
+        try {
+            let response = await fetch(url);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return await response.json();
+        } catch (error) {
+            console.error('Fetch error:', error);
+            return [];
+        }
     }
 
-    function mostrarInventario(Categoria1, Categoria2) {
+    $('#load-data').on('click', async function() {
+        let data = await fetchData('inventario.json');
+        localStorage.setItem('Categoria1', JSON.stringify(data));
+        mostrarInventario(data);
+    });
+
+    $('#fetch-api').on('click', async function() {
+        let data = await fetchData('https://api.example.com/inventario');
+        localStorage.setItem('Categoria1', JSON.stringify(data));
+        mostrarInventario(data);
+    });
+
+    function mostrarInventario(Categoria1) {
         function diferencia(entrada, salida) {
             return entrada - salida;
         }
@@ -52,10 +67,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
             });
 
             Categoria.sort((a, b) => {
-                if (a.id < b.id) {
+                if (a.id > b.id) {
                     return -1;
                 }
-                if (a.id > b.id) {
+                if (a.id < b.id) {
                     return 1;
                 }
                 return 0;
@@ -63,48 +78,47 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
 
         OrganizacionArray(Categoria1);
-        OrganizacionArray(Categoria2);
 
-        let tableBody = document.getElementById('table-body');
-        tableBody.innerHTML = ''; // Limpiar la tabla antes de llenarla nuevamente
+        let $tableBody = $('#table-body');
+        $tableBody.empty();
 
-        function llenarTabla(categoria) {
-            categoria.forEach(producto => {
-                let row = document.createElement('tr');
+        Categoria1.forEach((producto, index) => {
+            let $row = $('<tr></tr>');
 
-                let cellProducto = document.createElement('td');
-                cellProducto.textContent = producto.id;
-                row.appendChild(cellProducto);
+            $row.append(`<td>${producto.id}</td>`);
+            $row.append(`<td>${producto.entrada}</td>`);
+            $row.append(`<td>${producto.salida}</td>`);
+            $row.append(`<td>${producto.existente}</td>`);
 
-                let cellEntrada = document.createElement('td');
-                cellEntrada.textContent = producto.entrada;
-                row.appendChild(cellEntrada);
-
-                let cellSalida = document.createElement('td');
-                cellSalida.textContent = producto.salida;
-                row.appendChild(cellSalida);
-
-                let cellExistente = document.createElement('td');
-                cellExistente.textContent = producto.existente;
-                row.appendChild(cellExistente);
-
-                tableBody.appendChild(row);
+            let $editInput = $('<input type="number" value="' + producto.salida + '">');
+            $editInput.on('change', function(event) {
+                producto.salida = parseInt($editInput.val());
+                producto.existente = diferencia(producto.entrada, producto.salida);
+                localStorage.setItem('Categoria1', JSON.stringify(Categoria1));
+                mostrarInventario(Categoria1);
             });
-        }
+            $row.append($('<td></td>').append($editInput));
 
-        llenarTabla(Categoria1);
-        llenarTabla(Categoria2);
+            let $deleteButton = $('<button class="btn btn-danger">Eliminar</button>');
+            $deleteButton.on('click', function() {
+                Categoria1.splice(index, 1);
+                localStorage.setItem('Categoria1', JSON.stringify(Categoria1));
+                mostrarInventario(Categoria1);
+            });
+            $row.append($('<td></td>').append($deleteButton));
 
-        let info = document.getElementById('info');
+            $tableBody.append($row);
+        });
+
+        let $info = $('#info');
         let currentDate = new Date();
         let formattedDate = currentDate.toLocaleDateString();
         let formattedTime = currentDate.toLocaleTimeString();
-        info.textContent = `Fecha y hora de ingreso: ${formattedDate} ${formattedTime}`;
+        $info.text(`Fecha y hora de ingreso: ${formattedDate} ${formattedTime}`);
     }
 
-    if (localStorage.getItem('Categoria1') && localStorage.getItem('Categoria2')) {
+    if (localStorage.getItem('Categoria1')) {
         let Categoria1 = JSON.parse(localStorage.getItem('Categoria1'));
-        let Categoria2 = JSON.parse(localStorage.getItem('Categoria2'));
-        mostrarInventario(Categoria1, Categoria2);
+        mostrarInventario(Categoria1);
     }
 });

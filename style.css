@@ -1,0 +1,40 @@
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background-color: #f0f8ff;
+    color: #333;
+}
+
+h1, h2, h3 {
+    font-family: 'Fredoka One', cursive;
+}
+
+#page-title {
+    text-align: center;
+    color: #2a9d8f;
+}
+
+.form-control, .btn {
+    margin-top: 10px;
+}
+
+.table {
+    background-color: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.table th, .table td {
+    text-align: center;
+}
+
+.btn {
+    display: block;
+    width: 100%;
+}
+
+#info {
+    text-align: center;
+    margin-top: 20px;
+    font-style: italic;
+}
